@@ -1,35 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id        Int         @id @default(autoincrement())
-  email     String      @unique
-  whishlist Whishlist[]
-  name      String?
+  id                               Int        @id @default(autoincrement())
+  email                            String     @unique
+  name                             String?
+  listId                           Int?
+  wishlist                         Int?
+  WishList_User_wishlistToWishList WishList?  @relation("User_wishlistToWishList", fields: [wishlist], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  list                             WishList[]
 }
 
-model Whishlist {
-  id            Int         @id @default(autoincrement())
-  author        User        @relation(fields: [authorId], references: [id])
-  authorId      Int
-  whistListName String
-  whishlistItem WhistItem[]
-  dueDate       DateTime
-  belongsToUser Boolean
+model WishList {
+  id                           Int        @id @default(autoincrement())
+  authorId                     Int
+  listName                     String
+  dueDate                      DateTime
+  belongsToUser                Boolean
+  author                       User       @relation(fields: [authorId], references: [id])
+  User_User_wishlistToWishList User[]     @relation("User_wishlistToWishList")
+  listItem                     WishItem[]
 }
 
-model WhistItem {
-  id          Int       @id @default(autoincrement())
+model WishItem {
+  id          Int      @id @default(autoincrement())
   title       String
-  priority    Int       @default(autoincrement())
-  whishlist   Whishlist @relation(fields: [whishlistId], references: [id])
-  whishlistId Int
+  priority    Int      @default(autoincrement())
   description String?
   link        String?
+  listId      Int
+  list        WishList @relation(fields: [listId], references: [id])
 }

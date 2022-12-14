@@ -6,10 +6,18 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const users = trpc.user.getUser.useQuery({});
-  const wishlist = trpc.wishlist.getAllWishlists.useQuery({});
+  const utils = trpc.useContext();
+  const { data: users } = trpc.user.getUser.useQuery({});
+  const { data: wishlist } = trpc.wishlist.list.useQuery({});
+  const { data: wishlistById } = trpc.wishlist.byId.useQuery({ id: "1" });
 
-  console.log({ users: users.data, wishlist: wishlist.data });
+  const addList = trpc.wishlist.add.useMutation({
+    async onSuccess() {
+      await utils.wishlist.list.invalidate();
+    },
+  });
+
+  console.log({ users, wishlist: wishlist, wishlistById });
 
   return (
     <>
@@ -46,6 +54,22 @@ const Home: NextPage = () => {
                 to deploy it.
               </div>
             </Link>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <button
+              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              onClick={() => {
+                const input = {
+                  authorId: 1,
+                  listName: "Nyårslista",
+                  dueDate: new Date("2022-12-30"),
+                  belongsToUser: true,
+                };
+                addList.mutateAsync(input);
+              }}
+            >
+              Lägg till nyårslista
+            </button>
           </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">

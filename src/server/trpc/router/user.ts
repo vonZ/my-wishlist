@@ -6,7 +6,7 @@ import { publicProcedure, router } from "../trpc";
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
   email: true,
-  whishlist: true,
+  list: true,
   name: true,
 });
 

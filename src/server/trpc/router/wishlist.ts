@@ -1,21 +1,22 @@
 import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import { publicProcedure, router } from "../trpc";
 
-const defaultWhishlistSelect = Prisma.validator<Prisma.WhishlistSelect>()({
+const defaultWhishlistSelect = Prisma.validator<Prisma.WishListSelect>()({
   id: true,
   author: true,
   authorId: true,
-  whistListName: true,
-  whishlistItem: true,
+  listName: true,
+  listItem: true,
   dueDate: true,
   belongsToUser: true,
   _count: true,
 });
 
 export const wishlistRouter = router({
-  getAllWishlists: publicProcedure
+  list: publicProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).nullish(),
@@ -23,12 +24,49 @@ export const wishlistRouter = router({
       })
     )
     .query(async () => {
-      const items = await prisma.whishlist.findMany({
+      const items = await prisma.wishList.findMany({
         select: defaultWhishlistSelect,
         where: {},
       });
       return {
         items: items.reverse(),
       };
+    }),
+  byId: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { id } = input;
+      const inputId = Number(id);
+      const post = await prisma.wishList.findUnique({
+        where: { id: inputId },
+        select: defaultWhishlistSelect,
+      });
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `No post with id '${id}'`,
+        });
+      }
+      return post;
+    }),
+  add: publicProcedure
+    .input(
+      z.object({
+        authorId: z.number(),
+        listName: z.string(),
+        dueDate: z.date(),
+        belongsToUser: z.boolean(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const post = await prisma.wishList.create({
+        data: input,
+        select: defaultWhishlistSelect,
+      });
+      return post;
     }),
 });
