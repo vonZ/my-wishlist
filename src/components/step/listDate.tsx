@@ -1,36 +1,24 @@
-import type { FormEvent } from "react";
-import { useState } from "react";
-import { z, ZodError } from "zod";
+import { useEffect } from "react";
+import type { AnyZodObject } from "zod";
+import { z } from "zod";
 import { Step } from "./listWrapper";
+import { useValidation } from "./useValidation";
+
+export const listDateSchema = z
+  .object({
+    listDate: z.string().min(3),
+  })
+  .refine((data) => data.listDate.length > 3, {
+    message: "Listnamnet behöver innehålla minst tre ord",
+  }) as unknown as AnyZodObject;
 
 export const ListDate = ({ onClick }: { onClick: () => void }) => {
-  const [inputError, setInputError] = useState<string | null>(null);
-  const validateSchema = z
-    .object({
-      listDate: z.string().min(3),
-    })
-    .refine((data) => data.listDate.length > 3, {
-      message: "Listnamnet behöver innehålla minst tre ord",
-    });
+  const { inputError, isValidated, setInputError, handleSubmit } =
+    useValidation({ schema: listDateSchema });
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData);
-    try {
-      validateSchema.parse(data);
-      setInputError(null);
-      onClick();
-    } catch (err) {
-      if (err instanceof ZodError) {
-        const { issues } = err;
-        const errorCode = issues.find(
-          (item) => item.code === "custom"
-        )?.message;
-        errorCode && setInputError(errorCode);
-      }
-    }
-  };
+  useEffect(() => {
+    isValidated && onClick();
+  }, [isValidated, onClick]);
 
   return (
     <Step

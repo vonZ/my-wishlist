@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import type { FormEvent } from "react";
 
 interface StepProps {
@@ -15,11 +14,7 @@ export const Step: React.FC<StepProps> = ({
   onSubmit,
 }) => {
   return (
-    <motion.div
-      className="flex flex-col gap-4 rounded-md border-t-4 border-white bg-gray-800 p-10 shadow-md"
-      animate={{ x: -208 }}
-      transition={{ type: "spring", delay: 0 }}
-    >
+    <div className="flex flex-col gap-4 p-10">
       <h1 className="text-3xl font-medium text-white">{title}</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         {children}
@@ -43,6 +38,6 @@ export const Step: React.FC<StepProps> = ({
           </svg>
         </button>
       </form>
-    </motion.div>
+    </div>
   );
 };
