@@ -12,5 +12,4 @@ export const appRouter = router({
   wishlist: wishlistRouter,
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;
