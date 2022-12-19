@@ -7,20 +7,27 @@ interface StepProps {
   children: React.ReactNode;
 }
 
-export const Step: React.FC<StepProps> = ({
+export const ListWrapper: React.FC<StepProps> = ({
   children,
   title,
   submitTitle,
   onSubmit,
 }) => {
   return (
-    <div className="flex flex-col gap-4 p-10">
-      <h1 className="text-3xl font-medium text-white">{title}</h1>
+    <div className="flex flex-col gap-12 p-10">
+      <div className="flex flex-col gap-4">
+        <h1 className="text-left text-xl font-medium text-white">{title}</h1>
+        <p className="text-gray-400">
+          This is your organization`s name within Supabase.
+          <br />
+          For example, you can use the name of your company or department.
+        </p>
+      </div>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         {children}
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700"
+          className="mb-2 inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2.5 text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-pink-200 dark:focus:ring-pink-800"
         >
           {submitTitle}
           <svg

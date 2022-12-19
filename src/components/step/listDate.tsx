@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { useEffect, useMemo, useState } from "react";
 import type { AnyZodObject } from "zod";
 import { z } from "zod";
-import { Step } from "./listWrapper";
+import { Calendar } from "../calendar/calendar";
+import { ListWrapper } from "./listWrapper";
 import { useValidation } from "./useValidation";
 
 export const listDateSchema = z
@@ -13,32 +15,37 @@ export const listDateSchema = z
   }) as unknown as AnyZodObject;
 
 export const ListDate = ({ onClick }: { onClick: () => void }) => {
-  const { inputError, isValidated, setInputError, handleSubmit } =
-    useValidation({ schema: listDateSchema });
+  const todaysDate = today(getLocalTimeZone());
+  const [focusedDate, setFocusedDate] = useState(todaysDate);
+  const { isValidated, handleSubmit } = useValidation({
+    schema: listDateSchema,
+  });
 
   useEffect(() => {
     isValidated && onClick();
   }, [isValidated, onClick]);
 
+  const formattedDate = useMemo(() => {
+    const date = new Date(focusedDate.toString());
+    return date;
+  }, [focusedDate]);
+
   return (
-    <Step
+    <ListWrapper
       title="Till när du vill önska dig till?"
       submitTitle="Skapa din lista"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col gap-1">
-        <label className="text-white" htmlFor="listDate">
-          Datum för din lista
-        </label>
-        <input
-          className="rounded-sm border-2 border-gray-300 p-2"
-          onChange={() => setInputError(null)}
-          id="listDate"
-          name="listDate"
-          type="text"
+      <button onClick={() => setFocusedDate(todaysDate)}>Reset</button>
+      <p>{formattedDate.getDate()}</p>
+      <div className="flex flex-col items-center gap-1">
+        <Calendar
+          minValue={today(getLocalTimeZone())}
+          defaultValue={today(getLocalTimeZone())}
+          focusedValue={focusedDate}
+          onFocusChange={setFocusedDate}
         />
-        {inputError && <p className=" text-red-500">{inputError}</p>}
       </div>
-    </Step>
+    </ListWrapper>
   );
 };
