@@ -2,8 +2,9 @@ import { useButton } from "@react-aria/button";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import { useRef } from "react";
+import type { AriaButtonProps } from "react-aria";
 
-export const Button = (props) => {
+export const Button = (props: AriaButtonProps<"button">) => {
   const ref = useRef<HTMLButtonElement>(null);
   const { buttonProps } = useButton(props, ref);
   const { focusProps, isFocusVisible } = useFocusRing();
