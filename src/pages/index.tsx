@@ -82,22 +82,10 @@ const Home: NextPage = () => {
             Skapa din lista
           </Link>
           <div className="bg-white">
-            {users && (
-              <>
-                <p>Users</p>
-                <ReactJson src={users.items} />
-              </>
-            )}
             {wishlist && (
               <>
                 <p>Wishlist</p>
                 <ReactJson src={wishlist.items} />
-              </>
-            )}
-            {wishlistById && (
-              <>
-                <p>wishlistById</p>
-                <ReactJson src={wishlistById} />
               </>
             )}
           </div>
