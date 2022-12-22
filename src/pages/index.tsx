@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     },
   });
 
-  console.log({ users, wishlist: wishlist, wishlistById });
+  console.log({ users, wishlist, wishlistById });
 
   return (
     <>
