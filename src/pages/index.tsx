@@ -13,11 +13,31 @@ const ReactJson = dynamic(
 );
 
 const Home: NextPage = () => {
-  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  const hello = trpc.example.hello.useQuery(
+    { text: "from tRPC" },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
   const utils = trpc.useContext();
-  const { data: users } = trpc.user.getUser.useQuery({});
-  const { data: wishlist } = trpc.wishlist.list.useQuery({});
-  const { data: wishlistById } = trpc.wishlist.byId.useQuery({ id: "1" });
+  const { data: users } = trpc.user.getUser.useQuery(
+    {},
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const { data: wishlist } = trpc.wishlist.list.useQuery(
+    {},
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  const { data: wishlistById } = trpc.wishlist.byId.useQuery(
+    { id: "1" },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const addList = trpc.wishlist.add.useMutation({
     async onSuccess() {
