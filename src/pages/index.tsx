@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import ReactJson from "react-json-view";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
@@ -53,6 +54,26 @@ const Home: NextPage = () => {
           >
             Skapa din lista
           </Link>
+          <div className="bg-white">
+            {users && (
+              <>
+                <p>Users</p>
+                <ReactJson src={users.items} />
+              </>
+            )}
+            {wishlist && (
+              <>
+                <p>Wishlist</p>
+                <ReactJson src={wishlist.items} />
+              </>
+            )}
+            {wishlistById && (
+              <>
+                <p>wishlistById</p>
+                <ReactJson src={wishlistById} />
+              </>
+            )}
+          </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
