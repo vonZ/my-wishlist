@@ -1,9 +1,16 @@
 import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
-import ReactJson from "react-json-view";
 import { trpc } from "../utils/trpc";
+
+const ReactJson = dynamic(
+  () => {
+    return import("react-json-view");
+  },
+  { ssr: false }
+);
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
