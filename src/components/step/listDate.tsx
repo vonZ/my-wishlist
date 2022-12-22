@@ -36,15 +36,24 @@ export const ListDate = ({ onClick }: { onClick: () => void }) => {
       submitTitle="Skapa din lista"
       onSubmit={handleSubmit}
     >
-      <button onClick={() => setFocusedDate(todaysDate)}>Reset</button>
-      <p>{formattedDate.getDate()}</p>
-      <div className="flex flex-col items-center gap-1">
-        <Calendar
-          minValue={today(getLocalTimeZone())}
-          defaultValue={today(getLocalTimeZone())}
-          focusedValue={focusedDate}
-          onFocusChange={setFocusedDate}
-        />
+      <div className="flex justify-around">
+        <div className="flex flex-col items-center gap-1">
+          <Calendar
+            minValue={today(getLocalTimeZone())}
+            defaultValue={today(getLocalTimeZone())}
+            focusedValue={focusedDate}
+            onFocusChange={setFocusedDate}
+          />
+        </div>
+        <div>
+          <button
+            className="text-white"
+            onClick={() => setFocusedDate(todaysDate)}
+          >
+            Back to selected date
+          </button>
+          <p className="text-white">{formattedDate.getDate()}</p>
+        </div>
       </div>
     </ListWrapper>
   );

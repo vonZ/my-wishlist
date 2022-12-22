@@ -35,8 +35,10 @@
     "react-aria": "^3.22.0",
     "react-dom": "18.2.0",
     "react-stately": "^3.20.0",
+    "simple-zustand-devtools": "^1.1.0",
     "superjson": "1.12.0",
-    "zod": "^3.18.0"
+    "zod": "^3.18.0",
+    "zustand": "^4.1.5"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.10.5",

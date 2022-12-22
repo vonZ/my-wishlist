@@ -1,15 +1,16 @@
+import type { DateDuration } from "@internationalized/date";
 import { endOfMonth, getWeeksInMonth } from "@internationalized/date";
 import { useCalendarGrid } from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
-import type { CalendarState, RangeCalendarState } from "react-stately";
+import type { CalendarState } from "react-stately";
 import { CalendarCell } from "./calendarCell";
 
 export function CalendarGrid({
   state,
   offset = {},
 }: {
-  state: CalendarState | RangeCalendarState;
-  offset?: any;
+  state: CalendarState;
+  offset?: DateDuration;
 }) {
   const { locale } = useLocale();
   const startDate = state.visibleRange.start.add(offset);

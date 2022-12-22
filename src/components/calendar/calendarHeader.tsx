@@ -1,9 +1,19 @@
 import { useDateFormatter } from "@react-aria/i18n";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
+import type { DOMAttributes, FocusableElement } from "@react-types/shared";
+import type { AriaButtonProps } from "react-aria";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import type { CalendarState } from "react-stately";
 import { Button } from "./button";
 
-export const CalendarHeader = ({
+interface CalendarHeaderProps {
+  state: CalendarState;
+  calendarProps: DOMAttributes<FocusableElement>;
+  prevButtonProps: AriaButtonProps<"button">;
+  nextButtonProps: AriaButtonProps<"button">;
+}
+
+export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   state,
   calendarProps,
   prevButtonProps,
@@ -16,7 +26,7 @@ export const CalendarHeader = ({
   });
 
   return (
-    <div className="flex items-center py-4">
+    <div className="flex items-center">
       {/* Add a screen reader only description of the entire visible range rather than
        * a separate heading above each month grid. This is placed first in the DOM order
        * so that it is the first thing a touch screen reader user encounters.

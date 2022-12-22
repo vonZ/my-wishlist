@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { mountStoreDevtool } from "simple-zustand-devtools";
 import tw from "twin.macro";
+import create from "zustand";
 import { ListDate } from "../components/step/listDate";
 import { ListTitle } from "../components/step/listTitle";
 
@@ -20,13 +21,33 @@ const StepCounter = styled.div<{ $step: number }>`
   }}
 `;
 
+type State = {
+  currentStep: number;
+};
+
+type Actions = {
+  setNextStep: () => void;
+  setPrevStep: () => void;
+};
+
+export const useCreateListStore = create<State & Actions>()((set) => ({
+  currentStep: 1,
+  setNextStep: () => set((state) => ({ currentStep: state.currentStep + 1 })),
+  setPrevStep: () => set((state) => ({ currentStep: state.currentStep - 1 })),
+}));
+
+if (process.env.NODE_ENV === "development") {
+  mountStoreDevtool("Store", useCreateListStore);
+}
+
 const Create: NextPage = () => {
-  const [stepNr, setStepNr] = useState<number>(1);
+  const currentStep = useCreateListStore((state) => state.currentStep);
+  const setNextStep = useCreateListStore((state) => state.setNextStep);
 
   const renderStep = () => {
-    switch (stepNr) {
+    switch (currentStep) {
       case 1:
-        return <ListTitle onClick={() => setStepNr(2)} />;
+        return <ListTitle onClick={() => setNextStep()} />;
       case 2:
         return <ListDate onClick={() => console.log("Nästa steg")} />;
       default:
@@ -43,9 +64,9 @@ const Create: NextPage = () => {
       </Head>
       <div className="flex min-h-screen flex-col items-center bg-gray-900">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <div className="rounded-md bg-gray-800 shadow-md md:w-[50%]">
+          <div className="rounded-md bg-gray-800 shadow-md lg:w-[50%]">
             <div className="h-2 w-full rounded-tl-md rounded-tr-md bg-white">
-              <StepCounter $step={stepNr} />
+              <StepCounter $step={currentStep} />
             </div>
             {renderStep()}
           </div>

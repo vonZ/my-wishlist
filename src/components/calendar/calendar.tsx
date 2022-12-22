@@ -27,7 +27,7 @@ export const Calendar: React.FC<CalendarProps> = (props) => {
   );
 
   return (
-    <div {...calendarProps} className="inline-block text-gray-800">
+    <div {...calendarProps} className="flex flex-col gap-4 text-gray-800">
       <CalendarHeader
         state={state}
         calendarProps={calendarProps}
