@@ -15,7 +15,7 @@ export const useValidation = ({ schema }: { schema: AnyZodObject }) => {
   const validateSchema = (
     schema: AnyZodObject,
     data: {
-      [k: string]: FormDataEntryValue;
+      [k: string]: Date | FormDataEntryValue;
     }
   ) => {
     try {
@@ -33,10 +33,14 @@ export const useValidation = ({ schema }: { schema: AnyZodObject }) => {
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = ({
+    event,
+    data,
+  }: {
+    data: { [k: string]: Date | FormDataEntryValue };
+    event: FormEvent<HTMLFormElement>;
+  }) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData);
     validateSchema(schema, data);
   };
 

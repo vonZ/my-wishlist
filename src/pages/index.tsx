@@ -1,16 +1,8 @@
 import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
-
-const ReactJson = dynamic(
-  () => {
-    return import("react-json-view");
-  },
-  { ssr: false }
-);
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery(
@@ -81,14 +73,6 @@ const Home: NextPage = () => {
           >
             Skapa din lista
           </Link>
-          <div className="bg-white">
-            {wishlist && (
-              <>
-                <p>Wishlist</p>
-                <ReactJson src={wishlist.items} />
-              </>
-            )}
-          </div>
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
