@@ -1,15 +1,45 @@
 import styled from "@emotion/styled";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useEffect } from "react";
-
+import type { UseFormProps } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { mountStoreDevtool } from "simple-zustand-devtools";
 import tw from "twin.macro";
-import create from "zustand";
+import { z } from "zod";
 import { ListAppendix } from "../components/step/listAppendix";
 import { ListDate } from "../components/step/listDate";
 import { ListSummary } from "../components/step/listSummary";
 import { ListTitle } from "../components/step/listTitle";
+import { useCreateListStore } from "../store/list";
+import { trpc } from "../utils/trpc";
+
+export const ValidationSchema = z.object({
+  authorId: z.number(),
+  listName: z
+    .string()
+    .min(3)
+    .refine((data) => data.length > 3, {
+      message: "Listnamnet behöver innehålla minst tre ord",
+    }),
+  dueDate: z.date(),
+  belongsToUser: z.boolean(),
+});
+
+export type ListSchemaType = z.infer<typeof ValidationSchema>;
+
+export function useZodForm<TSchema extends z.ZodType>(
+  props: Omit<UseFormProps<TSchema["_input"]>, "resolver"> & {
+    schema: TSchema;
+  }
+) {
+  const form = useForm<TSchema["_input"]>({
+    ...props,
+    resolver: zodResolver(props.schema, undefined),
+  });
+
+  return form;
+}
 
 const StepCounter = styled.div<{ $step: number }>`
   ${tw`bg-gradient-to-br from-pink-500 to-orange-400 h-full rounded-tl-md duration-700 ease-out`}
@@ -25,59 +55,37 @@ const StepCounter = styled.div<{ $step: number }>`
   }}
 `;
 
-type State = {
-  currentStep: number;
-  formValue: {
-    listName?: string;
-    dueDate?: Date;
-    belongsToUser?: boolean;
-  } | null;
-};
-
-type Actions = {
-  setNextStep: () => void;
-  setPrevStep: () => void;
-  setStep: (step: number) => void;
-  setListName: (listName: string) => void;
-  setDueDate: (dueDate: Date) => void;
-  setBelongsToUser: (belongsToUser: boolean) => void;
-};
-
-export const useCreateListStore = create<State & Actions>()((set) => ({
-  currentStep: 1,
-  setNextStep: () => set((state) => ({ currentStep: state.currentStep + 1 })),
-  setPrevStep: () => set((state) => ({ currentStep: state.currentStep - 1 })),
-  setStep: (step: number) => set(() => ({ currentStep: step })),
-  setListName: (listName: string) =>
-    set((state) => ({ formValue: { ...state.formValue, listName } })),
-  setDueDate: (dueDate: Date) =>
-    set((state) => ({ formValue: { ...state.formValue, dueDate } })),
-  setBelongsToUser: (belongsToUser: boolean) =>
-    set((state) => ({ formValue: { ...state.formValue, belongsToUser } })),
-  formValue: null,
-}));
-
 if (process.env.NODE_ENV === "development") {
   mountStoreDevtool("Store", useCreateListStore);
 }
 
 const Create: NextPage = () => {
+  const utils = trpc.useContext();
   const formValue = useCreateListStore((state) => state.formValue);
+  const formIsValid = useCreateListStore((state) => state.formIsValid);
   const currentStep = useCreateListStore((state) => state.currentStep);
   const setNextStep = useCreateListStore((state) => state.setNextStep);
+  const setFormIsValid = useCreateListStore((state) => state.setFormIsValid);
 
-  useEffect(() => {
-    console.log({ formValue });
-  }, [formValue]);
+  const addList = trpc.wishlist.add.useMutation({
+    async onSuccess() {
+      await utils.wishlist.list.invalidate();
+    },
+  });
+
+  if (formIsValid) {
+    addList.mutateAsync(formValue);
+    setFormIsValid(false);
+  }
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <ListTitle onClick={setNextStep} />;
+        return <ListTitle onSubmit={setNextStep} />;
       case 2:
-        return <ListDate onClick={setNextStep} />;
+        return <ListDate onSubmit={setNextStep} />;
       case 3:
-        return <ListSummary onClick={setNextStep} />;
+        return <ListSummary onSubmit={() => setFormIsValid(true)} />;
       default:
         break;
     }

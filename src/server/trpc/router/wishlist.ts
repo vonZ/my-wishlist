@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { ValidationSchema } from "../../../pages/create";
 import { prisma } from "../prisma";
 import { publicProcedure, router } from "../trpc";
 
@@ -53,20 +54,11 @@ export const wishlistRouter = router({
       }
       return post;
     }),
-  add: publicProcedure
-    .input(
-      z.object({
-        authorId: z.number(),
-        listName: z.string(),
-        dueDate: z.date(),
-        belongsToUser: z.boolean(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const post = await prisma.wishList.create({
-        data: input,
-        select: defaultWhishlistSelect,
-      });
-      return post;
-    }),
+  add: publicProcedure.input(ValidationSchema).mutation(async ({ input }) => {
+    const post = await prisma.wishList.create({
+      data: input,
+      select: defaultWhishlistSelect,
+    });
+    return post;
+  }),
 });

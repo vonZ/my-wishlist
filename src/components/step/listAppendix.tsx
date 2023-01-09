@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FaThinkPeaks } from "react-icons/fa";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { useCreateListStore } from "../../pages/create";
+import { useCreateListStore } from "../../store/list";
 
 const StepSpan = ({
   title,
