@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { useZodForm } from "../../pages/create";
+import { useZodForm } from "../../pages";
 import { useCreateListStore } from "../../store/list";
 import { ListWrapper } from "./listWrapper";
 
@@ -39,6 +39,7 @@ export const ListTitle: React.FC<ListTitleProps> = ({ onSubmit }) => {
         <div className="flex w-full flex-col">
           <input
             type="text"
+            id="listName"
             className="w-full rounded-md border-2 border-gray-600 bg-gray-700 p-2 text-white placeholder:text-gray-500"
             placeholder="Namnet på din önskelista"
             {...methods.register("listName")}

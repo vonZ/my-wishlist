@@ -1,9 +1,22 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { ValidationSchema } from "../../../pages/create";
 import { prisma } from "../prisma";
 import { publicProcedure, router } from "../trpc";
+
+const ValidationSchema = z.object({
+  authorId: z.number(),
+  listName: z
+    .string()
+    .min(3)
+    .refine((data) => data.length > 3, {
+      message: "Listnamnet behöver innehålla minst tre ord",
+    }),
+  dueDate: z.date(),
+  belongsToUser: z.boolean(),
+});
+
+export type ListSchemaType = z.infer<typeof ValidationSchema>;
 
 const defaultWhishlistSelect = Prisma.validator<Prisma.WishListSelect>()({
   id: true,

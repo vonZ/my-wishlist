@@ -1,7 +1,7 @@
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import shallow from "zustand/shallow";
-import { useZodForm } from "../../pages/create";
+import { useZodForm } from "../../pages";
 import { useCreateListStore } from "../../store/list";
 import { ListWrapper } from "./listWrapper";
 
