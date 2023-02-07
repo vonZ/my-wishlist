@@ -5,7 +5,7 @@ import { ListSummary as ListSummaryComponent } from "./listSummary";
 import { ListTitle as ListTitleComponent } from "./listTitle";
 
 export default {
-  title: "Example/Steps",
+  title: "Components/Steps",
 } as Meta;
 
 const ListTitleStory: StoryFn<typeof ListTitleComponent> = (args) => (
